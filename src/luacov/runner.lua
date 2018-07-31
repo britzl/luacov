@@ -10,6 +10,8 @@ runner.version = "0.13.0"
 
 local stats = require("luacov.stats")
 local util = require("luacov.util")
+local hook = require("luacov.hook")
+local chook = pcall(require, "cluacov.hook")
 local reporter = require("luacov.reporter")
 runner.defaults = require("luacov.defaults")
 
@@ -115,7 +117,7 @@ local cluacov_ok = pcall(require, "cluacov.version")
 --    extra_processing(line)
 -- end
 -- @function debug_hook
-runner.debug_hook = require(cluacov_ok and "cluacov.hook" or "luacov.hook").new(runner)
+runner.debug_hook = (cluacov_ok and chook or hook).new(runner)
 
 ------------------------------------------------------
 -- Runs the reporter specified in configuration.
