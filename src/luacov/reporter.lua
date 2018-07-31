@@ -163,8 +163,6 @@ function ReporterBase:_run_file(filename)
       return
    end
 
-   local active_lines
-
    self:on_new_file(filename)
    local file_hits, file_miss = 0, 0
    local filedata = self:stats(filename)

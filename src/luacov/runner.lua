@@ -296,7 +296,7 @@ local function is_absolute(path)
 end
 
 local function get_cur_dir()
-   local curdir
+   local cur_dir
    pcall(function()
       local pwd_cmd = dir_sep == "\\" and "cd 2>nul" or "pwd 2>/dev/null"
       local handler = io.popen(pwd_cmd, "r")
