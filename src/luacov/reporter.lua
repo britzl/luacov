@@ -5,7 +5,6 @@
 local reporter = {}
 
 local LineScanner = require("luacov.linescanner")
-local luacov = require("luacov.runner")
 local util = require("luacov.util")
 
 ----------------------------------------------------------------
@@ -22,7 +21,7 @@ local util = require("luacov.util")
 local ReporterBase = {} do
 ReporterBase.__index = ReporterBase
 
-function ReporterBase:new(conf)
+function ReporterBase:new(luacov, conf)
    local stats = require("luacov.stats")
    local data = stats.load(conf.statsfile)
 
@@ -380,12 +379,12 @@ end
 -- methods will be called.
 -- The easiest way to implement a custom reporter class is to
 -- extend `ReporterBase`.
-function reporter.report(reporter_class)
+function reporter.report(luacov, reporter_class)
    local configuration = luacov.load_config()
 
    reporter_class = reporter_class or DefaultReporter
 
-   local rep, err = reporter_class:new(configuration)
+   local rep, err = reporter_class:new(luacov, configuration)
 
    if not rep then
       print(err)

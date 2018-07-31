@@ -10,6 +10,7 @@ runner.version = "0.13.0"
 
 local stats = require("luacov.stats")
 local util = require("luacov.util")
+local reporter = require("luacov.reporter")
 runner.defaults = require("luacov.defaults")
 
 local debug = require("debug")
@@ -121,17 +122,10 @@ runner.debug_hook = require(cluacov_ok and "cluacov.hook" or "luacov.hook").new(
 -- @param[opt] configuration if string, filename of config file (used to call `load_config`).
 -- If table then config table (see file `luacov.default.lua` for an example).
 -- If `configuration.reporter` is not set, runs the default reporter;
--- otherwise, it must be a module name in 'luacov.reporter' namespace.
--- The module must contain 'report' function, which is called without arguments.
+-- otherwise, it must be an implementation of ReporterBase from reporter.lua.
 function runner.run_report(configuration)
    configuration = runner.load_config(configuration)
-   local reporter = "luacov.reporter"
-
-   if configuration.reporter then
-      reporter = reporter .. "." .. configuration.reporter
-   end
-
-   require(reporter).report()
+   reporter.report(runner, configuration.reporter)
 end
 
 local on_exit_run_once = false
