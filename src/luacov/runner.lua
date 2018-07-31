@@ -11,7 +11,6 @@ runner.version = "0.13.0"
 local stats = require("luacov.stats")
 local util = require("luacov.util")
 local hook = require("luacov.hook")
-local chook = pcall(require, "cluacov.hook")
 local reporter = require("luacov.reporter")
 runner.defaults = require("luacov.defaults")
 
@@ -100,8 +99,6 @@ function runner.save_stats()
    runner.data = {}
 end
 
-local cluacov_ok = pcall(require, "cluacov.version")
-
 --------------------------------------------------
 -- Debug hook set by LuaCov.
 -- Acknowledges that a line is executed, but does nothing
@@ -117,7 +114,7 @@ local cluacov_ok = pcall(require, "cluacov.version")
 --    extra_processing(line)
 -- end
 -- @function debug_hook
-runner.debug_hook = (cluacov_ok and chook or hook).new(runner)
+runner.debug_hook = hook.new(runner)
 
 ------------------------------------------------------
 -- Runs the reporter specified in configuration.
@@ -284,7 +281,6 @@ local luacov_excludes = {
    "luacov/stats$",
    "luacov/tick$",
    "luacov/util$",
-   "cluacov/version$"
 }
 
 local function is_absolute(path)

@@ -155,13 +155,6 @@ end
 
 -- luacheck: pop
 
-local cluacov_ok = pcall(require, "cluacov.version")
-local deepactivelines
-
-if cluacov_ok then
-   deepactivelines = require("cluacov.deepactivelines")
-end
-
 function ReporterBase:_run_file(filename)
    local file, open_err = io.open(filename)
 
@@ -171,26 +164,6 @@ function ReporterBase:_run_file(filename)
    end
 
    local active_lines
-
-   if cluacov_ok then
-      local src, read_err = file:read("*a")
-
-      if not src then
-         self:on_file_error(filename, "read", read_err)
-         return
-      end
-
-      src = src:gsub("^#![^\n]*", "")
-      local func, load_err = util.load_string(src, nil, "@file")
-
-      if not func then
-         self:on_file_error(filename, "load", "line " .. util.unprefix(load_err, "file:"))
-         return
-      end
-
-      active_lines = deepactivelines.get(func)
-      file:seek("set")
-   end
 
    self:on_new_file(filename)
    local file_hits, file_miss = 0, 0
@@ -206,10 +179,6 @@ function ReporterBase:_run_file(filename)
       local always_excluded, excluded_when_not_hit = scanner:consume(line)
       local hits = filedata[line_nr] or 0
       local included = not always_excluded and (not excluded_when_not_hit or hits ~= 0)
-
-      if cluacov_ok then
-         included = included and active_lines[line_nr]
-      end
 
       if included then
          if hits == 0 then
